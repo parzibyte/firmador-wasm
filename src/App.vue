@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import DbWorker from "@/wasm_worker?worker"
+const worker = new DbWorker();
+console.log(
+
+  { worker }
+)
+//worker.postMessage({ accion: "firmar", argumentos: [``, "hola", "mundo"] })
+worker.onmessage = (a) => {
+  console.log(
+    { a }
+  )
+}
+console.log("post ya")
 </script>
 
 <template>
