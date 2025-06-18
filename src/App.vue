@@ -1,28 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import DbWorker from "@/wasm_worker?worker"
-const worker = new DbWorker();
-console.log(
-
-  { worker }
-)
-//worker.postMessage({ accion: "firmar", argumentos: [``, "hola", "mundo"] })
-worker.onmessage = (a) => {
-  console.log(
-    { a }
-  )
-}
-console.log("post ya")
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
