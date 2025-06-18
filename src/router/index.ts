@@ -1,6 +1,8 @@
-import { createRouter, createWebHashHistory} from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CrearClave from '@/components/Claves/CrearClave.vue'
+import CrearCliente from '@/components/Clientes/CrearCliente.vue'
+import CrearFirma from '@/components/Firmas/CrearFirma.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -9,6 +11,16 @@ const router = createRouter({
       path: '/crearClave',
       name: 'crearClave',
       component: CrearClave,
+    },
+    {
+      path: '/crearCliente',
+      name: 'crearCliente',
+      component: CrearCliente,
+    },
+    {
+      path: '/crearFirma',
+      name: 'crearFirma',
+      component: CrearFirma,
     },
     {
       path: '/',

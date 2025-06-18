@@ -37,8 +37,17 @@ Comlink.expose({
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
 				privada TEXT NOT NULL,
-				publica TEXT NOT NULL
+				publica TEXT NOT NULL,
+                costoMensual REAL NOT NULL,
+                plantilla TEXT NOT NULL
 				)`);
-        console.log("initDatabase listo")
+        await db.exec(`CREATE TABLE IF NOT EXISTS clientes(
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL,
+				correo TEXT NOT NULL,
+				fechaRegistro TEXT NOT NULL,
+				claveApi TEXT NOT NULL
+				)`);
+        console.log("initDatabase listo");
     },
 });
