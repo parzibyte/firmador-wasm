@@ -5,7 +5,7 @@ import MODULO_WASM from "./main.wasm?url"
 const NOMBRE_BASE_DE_DATOS = "firmador.sqlite3";
 let db;
 Comlink.expose({
-    firmar: async(clavePrivadaRSA, mensaje, separador)=>{
+    firmar: async (clavePrivadaRSA, mensaje, separador) => {
         return self.firmar(clavePrivadaRSA, mensaje, separador);
     },
     exec: async (consulta, argumentos) => {
@@ -52,6 +52,18 @@ Comlink.expose({
 				correo TEXT NOT NULL,
 				fechaRegistro TEXT NOT NULL,
 				claveApi TEXT NOT NULL
+				)`);
+        await db.exec(`CREATE TABLE IF NOT EXISTS firmas(
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_cliente INTEGER NOT NULL,
+                id_clave INTEGER NOT NULL,
+				firma TEXT NOT NULL,
+				fecha_inicio TEXT NOT NULL,
+				fecha_fin TEXT NOT NULL,
+				monto REAL NOT NULL,
+				fecha_generacion TEXT NOT NULL,
+                FOREIGN KEY(id_cliente) REFERENCES clientes(id) ON UPDATE CASCADE ON DELETE CASCADE,
+                FOREIGN KEY(id_clave) REFERENCES claves(id) ON UPDATE CASCADE ON DELETE CASCADE
 				)`);
         console.log("initDatabase listo");
     },

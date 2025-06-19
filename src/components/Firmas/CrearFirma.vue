@@ -7,6 +7,7 @@ import SelectWithoutAutocomplete from '../Forms/SelectWithoutAutocomplete.vue';
 import { diferenciaEnDiasDeDosFechas, fechaISO8601ADate, obtenerFechaActualAjustada, obtenerFechaActualComoISO8601, obtenerFechaFuturoComoISO8601 } from '@/fechas';
 import CustomInput from '../Forms/CustomInput.vue';
 import CustomButton from '../Forms/CustomButton.vue';
+import { generarMensaje } from '@/utiles';
 const meses = ref(0);
 const fechaInicio: Ref<string> = ref(obtenerFechaActualComoISO8601())
 const fechaFin: Ref<string> = ref(obtenerFechaActualComoISO8601())
@@ -18,13 +19,14 @@ const clienteSeleccionado: Ref<Cliente> = ref({
     nombre: "",
 });
 const claveSeleccionada: Ref<Clave> = ref({
-    costo: 0,
+    costoMensual: 0,
     nombre: "",
     plantillaFirma: "",
     separador: "",
     plantilla: "",
     privada: "",
     publica: "",
+    id: 0,
 });
 const dbStore = useDatabaseStore();
 const claves: Ref<Array<Clave>> = ref([]);
@@ -45,7 +47,7 @@ const init = async () => {
 }
 
 const mensajeGenerado = () => {
-    if (!clienteSeleccionado) {
+    if (!clienteSeleccionado.value) {
         return "";
     }
     if (!claveSeleccionada.value.plantillaFirma) {
@@ -74,8 +76,33 @@ const refrescarFechaFin = () => {
     fechaFin.value = obtenerFechaFuturoComoISO8601(meses.value * 30, fechaISO8601ADate(fechaInicio.value));
 }
 const firmar = async () => {
-    const r = await dbStore.firmar(claveSeleccionada.value.privada, mensajeGenerado(), claveSeleccionada.value.separador);
-    console.log({ r })
+    const { datos, error } = await dbStore.firmar(claveSeleccionada.value.privada, mensajeGenerado(), claveSeleccionada.value.separador);
+    if (error) {
+        alert("Error firmando: " + error);
+        return;
+    }
+
+    console.log({ datos });
+    // La firma está en datos
+    const firmasInsertadas = await dbStore.exec(`INSERT INTO firmas
+    (id_cliente, id_clave, firma, fecha_inicio, fecha_fin, monto, fecha_generacion)
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?)
+    RETURNING *
+    `, [
+        clienteSeleccionado.value.id,
+        claveSeleccionada.value.id,
+        datos,
+        fechaInicio.value,
+        fechaFin.value,
+        claveSeleccionada.value.costoMensual,
+        obtenerFechaActualComoISO8601(),
+    ]);
+    const firmaInsertada = firmasInsertadas[0];
+    console.log({ firmaInsertada });
+    const mensaje = generarMensaje(claveSeleccionada.value.plantilla, firmaInsertada.firma, clienteSeleccionado.value, fechaInicio.value, fechaFin.value)
+    await navigator.clipboard.writeText(mensaje)
+    console.log(mensaje)
 }
 </script>
 <template>

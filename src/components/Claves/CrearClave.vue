@@ -10,10 +10,11 @@ const detalles: Ref<Clave> = ref({
     privada: "",
     publica: "",
     nombre: "",
-    costo: 0,
+    costoMensual: 0,
     plantilla: "",
     plantillaFirma: "",
     separador: "",
+    id: 0,
 });
 const guardarClave = async () => {
     const r = await dbStore.exec(`INSERT INTO claves
@@ -24,7 +25,7 @@ const guardarClave = async () => {
             detalles.value.nombre,
             detalles.value.privada,
             detalles.value.publica,
-            detalles.value.costo,
+            detalles.value.costoMensual,
             detalles.value.plantilla,
             detalles.value.plantillaFirma,
             detalles.value.separador,
@@ -35,7 +36,7 @@ const guardarClave = async () => {
 <template>
     <div class="flex flex-col">
         <CustomInput label="Nombre" v-model="detalles.nombre"></CustomInput>
-        <CustomInput type="number" label="Costo mensual" v-model.number="detalles.costo"></CustomInput>
+        <CustomInput type="number" label="Costo mensual" v-model.number="detalles.costoMensual"></CustomInput>
         <CustomTextarea v-model="detalles.privada" label="Clave privada"></CustomTextarea>
         <CustomTextarea v-model="detalles.publica" label="Clave pública"></CustomTextarea>
         <CustomTextarea v-model="detalles.plantilla" label="Plantilla"></CustomTextarea>

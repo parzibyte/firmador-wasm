@@ -6,10 +6,11 @@ export type Cliente = {
     fechaRegistro: string,
 }
 export type Clave = {
+    id: number,
     privada: string,
     publica: string,
     nombre: string,
-    costo: number,
+    costoMensual: number,
     plantilla: string,
     plantillaFirma: string,
     separador: string,
