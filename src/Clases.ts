@@ -11,4 +11,6 @@ export type Clave = {
     nombre: string,
     costo: number,
     plantilla: string,
+    plantillaFirma: string,
+    separador: string,
 }

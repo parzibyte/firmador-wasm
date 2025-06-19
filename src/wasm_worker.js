@@ -5,6 +5,9 @@ import MODULO_WASM from "./main.wasm?url"
 const NOMBRE_BASE_DE_DATOS = "firmador.sqlite3";
 let db;
 Comlink.expose({
+    firmar: async(clavePrivadaRSA, mensaje, separador)=>{
+        return self.firmar(clavePrivadaRSA, mensaje, separador);
+    },
     exec: async (consulta, argumentos) => {
         argumentos = argumentos || [];
         console.log("Exec desde wasm!")
@@ -39,7 +42,9 @@ Comlink.expose({
 				privada TEXT NOT NULL,
 				publica TEXT NOT NULL,
                 costoMensual REAL NOT NULL,
-                plantilla TEXT NOT NULL
+                plantilla TEXT NOT NULL,
+                plantillaFirma TEXT NOT NULL,
+                separador TEXT NOT NULL
 				)`);
         await db.exec(`CREATE TABLE IF NOT EXISTS clientes(
 				id INTEGER PRIMARY KEY AUTOINCREMENT,

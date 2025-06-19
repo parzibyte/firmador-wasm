@@ -11,12 +11,14 @@ de que se respeten los tipos de Comlink de dbworker.js
 await DbHelper.initWasm()
 // @ts-ignore
 await DbHelper.initDatabase()
-console.log("Y terminamos de todo")
 export const useDatabaseStore = defineStore('database', () => {
+    async function firmar(clavePrivadaRSA: string, mensaje: string, separador: string): Promise<any> {
+        // @ts-ignore
+        return await DbHelper.firmar(clavePrivadaRSA, mensaje, separador);
+    }
     async function exec(consulta: string, argumentos: Array<any>): Promise<any> {
-        console.log("Invocando a exec cuando DbHelper es %o y su exec es %o pero si es undefined es %o", DbHelper, DbHelper.exec, DbHelper.asasasxxx)
         // @ts-ignore
         return await DbHelper.exec(consulta, argumentos);
     }
-    return { exec };
+    return { exec, firmar };
 });

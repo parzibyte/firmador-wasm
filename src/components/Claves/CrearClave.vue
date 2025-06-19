@@ -12,15 +12,22 @@ const detalles: Ref<Clave> = ref({
     nombre: "",
     costo: 0,
     plantilla: "",
+    plantillaFirma: "",
+    separador: "",
 });
 const guardarClave = async () => {
-    const r = await dbStore.exec("INSERT INTO claves (nombre, privada, publica, costoMensual, plantilla) VALUES (?, ?, ?, ?, ?) RETURNING *",
+    const r = await dbStore.exec(`INSERT INTO claves
+    (nombre, privada, publica, costoMensual, plantilla, plantillaFirma, separador)
+     VALUES 
+     (?, ?, ?, ?, ?, ?, ?) RETURNING *`,
         [
             detalles.value.nombre,
             detalles.value.privada,
             detalles.value.publica,
             detalles.value.costo,
             detalles.value.plantilla,
+            detalles.value.plantillaFirma,
+            detalles.value.separador,
         ]);
     console.log({ r })
 }
@@ -32,6 +39,8 @@ const guardarClave = async () => {
         <CustomTextarea v-model="detalles.privada" label="Clave privada"></CustomTextarea>
         <CustomTextarea v-model="detalles.publica" label="Clave pública"></CustomTextarea>
         <CustomTextarea v-model="detalles.plantilla" label="Plantilla"></CustomTextarea>
+        <CustomTextarea v-model="detalles.plantillaFirma" label="Plantilla firma"></CustomTextarea>
+        <CustomTextarea v-model="detalles.separador" label="Separador"></CustomTextarea>
         <CustomButton @click="guardarClave">Guardar</CustomButton>
     </div>
 </template>
