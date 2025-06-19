@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import CrearClave from '@/components/Claves/CrearClave.vue'
 import CrearCliente from '@/components/Clientes/CrearCliente.vue'
 import CrearFirma from '@/components/Firmas/CrearFirma.vue'
+import Firmas from '@/components/Firmas/Firmas.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/firmas',
+      name: 'firmas',
+      component: Firmas,
     },
     {
       path: '/about',
