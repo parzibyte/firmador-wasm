@@ -8,10 +8,16 @@ import Clientes from '@/components/Clientes/Clientes.vue'
 import Claves from '@/components/Claves/Claves.vue'
 import EditarClave from '@/components/Claves/EditarClave.vue'
 import Ajustes from '@/components/Ajustes/Ajustes.vue'
+import CopiaDeSeguridad from '@/components/CopiaDeSeguridad/CopiaDeSeguridad.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/copiaDeSeguridad',
+      name: 'copiaDeSeguridad',
+      component: CopiaDeSeguridad,
+    },
     {
       path: '/ajustes',
       name: 'ajustes',
@@ -44,8 +50,8 @@ const router = createRouter({
     },
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'crearFirma',
+      component: CrearFirma,
     },
     {
       path: '/firmas',
@@ -56,14 +62,6 @@ const router = createRouter({
       path: '/clientes',
       name: 'clientes',
       component: Clientes,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
     },
   ],
 })
