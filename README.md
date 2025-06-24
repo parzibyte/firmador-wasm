@@ -30,6 +30,8 @@ C:\Users\parzibyte>
 `openssl rsa -in clave_privada.pem -pubout -out clave_publica.pem`
 
 # Todo junto
-`openssl genrsa -traditional -out clave_privada.pem 3072`
 
-`openssl rsa -in clave_privada.pem -pubout -out clave_publica.pem`
+```
+openssl genrsa -traditional -out clave_privada.pem 3072
+openssl rsa -in clave_privada.pem -pubout -out clave_publica.pem
+```
