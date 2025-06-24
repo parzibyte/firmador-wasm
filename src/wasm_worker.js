@@ -65,6 +65,11 @@ Comlink.expose({
                 FOREIGN KEY(id_cliente) REFERENCES clientes(id) ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY(id_clave) REFERENCES claves(id) ON UPDATE CASCADE ON DELETE CASCADE
 				)`);
+    await db.exec(`CREATE TABLE IF NOT EXISTS ajustes(
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_chat_telegram TEXT NOT NULL,
+                token_telegram TEXT NOT NULL
+				)`)
         console.log("initDatabase listo");
     },
 });

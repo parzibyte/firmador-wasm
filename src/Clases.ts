@@ -29,3 +29,8 @@ export type Firma = {
     claveJson: string,
     clave: Clave,
 };
+export type Ajustes = {
+    id: number,
+    id_chat_telegram: string,
+    token_telegram: string,
+};

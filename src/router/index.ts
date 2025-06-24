@@ -7,10 +7,16 @@ import Firmas from '@/components/Firmas/Firmas.vue'
 import Clientes from '@/components/Clientes/Clientes.vue'
 import Claves from '@/components/Claves/Claves.vue'
 import EditarClave from '@/components/Claves/EditarClave.vue'
+import Ajustes from '@/components/Ajustes/Ajustes.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/ajustes',
+      name: 'ajustes',
+      component: Ajustes,
+    },
     {
       path: '/crearClave',
       name: 'crearClave',
