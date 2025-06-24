@@ -5,8 +5,9 @@ import CustomButton from '../Forms/CustomButton.vue';
 import { useDatabaseStore } from '@/stores/db';
 import type { Cliente } from '@/Clases';
 import { obtenerFechaActualComoISO8601 } from '@/fechas';
+import { useRouter } from 'vue-router';
 const dbStore = useDatabaseStore();
-
+const router = useRouter();
 const cliente: Ref<Cliente> = ref({
     claveApi: "",
     correo: "",
@@ -44,9 +45,14 @@ const guardar = async () => {
         }
     }
 }
+
+const volver = ()=>{
+    router.push({name:"clientes"});
+}
 </script>
 <template>
     <div class="flex flex-col">
+        <CustomButton @click="volver">Volver</CustomButton>
         <CustomInput v-model="cliente.nombre" label="Nombre"></CustomInput>
         <CustomInput v-model="cliente.correo" type="email" label="Correo"></CustomInput>
         <CustomButton @click="guardar">Guardar</CustomButton>

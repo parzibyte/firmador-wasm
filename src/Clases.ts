@@ -16,6 +16,7 @@ export type Clave = {
     separador: string,
 }
 export type Firma = {
+    firma: string,
     id: number,
     id_clave: number,
     id_cliente: number,
@@ -25,4 +26,6 @@ export type Firma = {
     clienteJson: string,
     monto: number,
     cliente: Cliente,
+    claveJson: string,
+    clave: Clave,
 };

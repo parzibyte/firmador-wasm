@@ -4,6 +4,9 @@ import CrearClave from '@/components/Claves/CrearClave.vue'
 import CrearCliente from '@/components/Clientes/CrearCliente.vue'
 import CrearFirma from '@/components/Firmas/CrearFirma.vue'
 import Firmas from '@/components/Firmas/Firmas.vue'
+import Clientes from '@/components/Clientes/Clientes.vue'
+import Claves from '@/components/Claves/Claves.vue'
+import EditarClave from '@/components/Claves/EditarClave.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -12,6 +15,16 @@ const router = createRouter({
       path: '/crearClave',
       name: 'crearClave',
       component: CrearClave,
+    },
+    {
+      path: '/editarClave/:id',
+      name: 'editarClave',
+      component: EditarClave,
+    },
+    {
+      path: '/claves',
+      name: 'claves',
+      component: Claves,
     },
     {
       path: '/crearCliente',
@@ -32,6 +45,11 @@ const router = createRouter({
       path: '/firmas',
       name: 'firmas',
       component: Firmas,
+    },
+    {
+      path: '/clientes',
+      name: 'clientes',
+      component: Clientes,
     },
     {
       path: '/about',

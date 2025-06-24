@@ -8,6 +8,8 @@ import { diferenciaEnDiasDeDosFechas, fechaISO8601ADate, obtenerFechaActualAjust
 import CustomInput from '../Forms/CustomInput.vue';
 import CustomButton from '../Forms/CustomButton.vue';
 import { generarMensaje } from '@/utiles';
+import { useFilterStore } from '@/stores/filter';
+const filterStore = useFilterStore()
 const meses = ref(0);
 const fechaInicio: Ref<string> = ref(obtenerFechaActualComoISO8601())
 const fechaFin: Ref<string> = ref(obtenerFechaActualComoISO8601())
@@ -95,7 +97,7 @@ const firmar = async () => {
         datos,
         fechaInicio.value,
         fechaFin.value,
-        claveSeleccionada.value.costoMensual,
+        costo.value,
         obtenerFechaActualComoISO8601(),
     ]);
     const firmaInsertada = firmasInsertadas[0];
@@ -104,6 +106,23 @@ const firmar = async () => {
     await navigator.clipboard.writeText(mensaje)
     console.log(mensaje)
 }
+const cantidadMeses = computed(() => {
+    return diferenciaEnDiasDeDosFechas(fechaISO8601ADate(fechaFin.value), fechaISO8601ADate(fechaInicio.value)) / 30;
+});
+
+const costo = computed(() => {
+    return cantidadMeses.value * claveSeleccionada.value.costoMensual;
+});
+
+const puedeFirmar = computed(() => {
+    if (!claveSeleccionada.value.id) {
+        return false;
+    }
+    if (!clienteSeleccionado.value.id) {
+        return false;
+    }
+    return true;
+});
 </script>
 <template>
     <div class="flex flex-col">
@@ -118,13 +137,22 @@ const firmar = async () => {
         </SelectWithoutAutocomplete>
         <strong>{{ mensajeGenerado() }}{{ claveSeleccionada.separador }}AQUÍ LA FIRMA</strong>
         <CustomInput @change="refrescarFechaFin()" type="date" label="Fecha inicio" v-model="fechaInicio"></CustomInput>
-        {{ diferenciaEnDiasDeDosFechas(fechaISO8601ADate(fechaFin), fechaISO8601ADate(fechaInicio)) }} días desde {{
-            fechaInicio }}
         <div class="flex flex-row items-center w-full">
-            <CustomButton v-if="meses > 1" @click="disminuirMeses">-</CustomButton>
+            <CustomButton :disabled="meses <= 1" @click="disminuirMeses">-</CustomButton>
             <CustomInput class="w-full" v-model="fechaFin" type="date" label="Fecha fin"></CustomInput>
             <CustomButton @click="aumentarMeses">+</CustomButton>
         </div>
-        <CustomButton @click="firmar()">Firmar</CustomButton>
+        <p>
+            {{ diferenciaEnDiasDeDosFechas(fechaISO8601ADate(fechaFin), fechaISO8601ADate(fechaInicio)) }} días
+            <strong>({{
+                cantidadMeses }} meses)</strong> desde
+            <strong>
+                {{
+                    filterStore.fechaSinHoraDesdeCadenaISO8601(fechaInicio)
+                }}
+            </strong>
+        </p>
+        <div class="text-xl text-green-500">{{ filterStore.dinero(costo) }}</div>
+        <CustomButton :disabled="!puedeFirmar" @click="firmar()">Firmar</CustomButton>
     </div>
 </template>
