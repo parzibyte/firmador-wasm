@@ -6,7 +6,9 @@ import { useFilterStore } from '@/stores/filter';
 import { diferenciaEnDiasDeDosFechas, fechaISO8601ADate, obtenerFechaActualAjustada } from '@/fechas';
 import { computed } from 'vue';
 import { generarMensaje } from '@/utiles';
+import { useToastStore } from '@/stores/toast';
 const filterStore = useFilterStore();
+const toastStore = useToastStore();
 interface Props {
     firma: Firma,
 }
@@ -44,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const copiar = async (texto: string) => {
     await navigator.clipboard.writeText(texto);
+    toastStore.mostrarToast("Copiado", "success", 500);
 }
 
 const copiarMensaje = async () => {
