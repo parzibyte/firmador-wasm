@@ -5,6 +5,9 @@ import CustomButton from '../Forms/CustomButton.vue';
 import { ref, type Ref } from 'vue';
 import CustomInput from '../Forms/CustomInput.vue';
 import type { Clave } from '@/Clases';
+import { useToastStore } from '@/stores/toast';
+const cargando = ref(false);
+const toastStore = useToastStore();
 const dbStore = useDatabaseStore();
 const detalles: Ref<Clave> = ref({
     privada: "",
@@ -17,7 +20,8 @@ const detalles: Ref<Clave> = ref({
     id: 0,
 });
 const guardarClave = async () => {
-    const r = await dbStore.exec(`INSERT INTO claves
+    cargando.value = true;
+    await dbStore.exec(`INSERT INTO claves
     (nombre, privada, publica, costoMensual, plantilla, plantillaFirma, separador)
      VALUES 
      (?, ?, ?, ?, ?, ?, ?) RETURNING *`,
@@ -30,7 +34,8 @@ const guardarClave = async () => {
             detalles.value.plantillaFirma,
             detalles.value.separador,
         ]);
-    console.log({ r })
+    cargando.value = false;
+    toastStore.mostrarToast("Clave creada", "success", 500);
 }
 </script>
 <template>
@@ -49,6 +54,6 @@ const guardarClave = async () => {
             <code>fechaFin</code>. Usa
             {variable} dentro del texto para usarlas. Por ejemplo: <code>{fechaInicio}</code>
         </p>
-        <CustomButton @click="guardarClave">Guardar</CustomButton>
+        <CustomButton :loading="cargando" @click="guardarClave">Guardar</CustomButton>
     </div>
 </template>
