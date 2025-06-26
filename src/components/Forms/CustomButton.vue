@@ -26,7 +26,7 @@ const clasesSegunTipo = computed(() => {
 </script>
 <template>
     <button :disabled="propiedades.disabled || propiedades.loading" :class="clasesSegunTipo"
-        class="cursor-pointer rounded-md px-3 py-2 m-1 text-sm font-semibold inline-flex items-center focus:outline-none max-h-min  max-w-max flex flex-col w-full">
+        class="cursor-pointer rounded-md px-3 py-2 m-1 text-sm font-semibold inline-flex items-center focus:outline-none max-h-min  max-w-max flex flex-row w-full">
         <IndicadorCargando :loading="propiedades.loading"></IndicadorCargando>
             <slot></slot>
     </button>
