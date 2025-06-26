@@ -9,7 +9,8 @@ const firmas: Ref<Array<Firma>> = ref([]);
 const dbStore = useDatabaseStore()
 const router = useRouter();
 
-const init = async () => {
+
+const refrescarFirmas = async () => {
     const firmasSinMapear = await dbStore.exec(`SELECT 
     firmas.id,
     firmas.firma,
@@ -25,10 +26,11 @@ const init = async () => {
     firmas.value = firmasSinMapear.map((firma: Firma) => {
         firma.cliente = JSON.parse(firma.clienteJson);
         firma.clave = JSON.parse(firma.claveJson);
-        delete firma.claveJson;
-        delete firma.clienteJson;
         return firma;
     })
+}
+const init = async () => {
+    await refrescarFirmas();
 }
 
 const nuevaFirma = () => {
@@ -38,10 +40,15 @@ onMounted(() => {
     init()
 })
 
+const eliminar = async (firma: Firma) => {
+    await dbStore.exec(`DELETE FROM firmas WHERE id = ?`, [firma.id]);
+    await refrescarFirmas();
+}
+
 </script>
 <template>
     <div class="flex flex-col">
         <CustomButton @click="nuevaFirma()">Nueva</CustomButton>
-        <DetalleFirma v-for="firma in firmas" :firma></DetalleFirma>
+        <DetalleFirma @eliminar="eliminar(firma)" v-for="firma in firmas" :firma></DetalleFirma>
     </div>
 </template>

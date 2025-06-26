@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Firma } from '@/Clases';
+import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
 import CustomButton from '../Forms/CustomButton.vue';
 import { useFilterStore } from '@/stores/filter';
 import { diferenciaEnDiasDeDosFechas, fechaISO8601ADate, obtenerFechaActualAjustada } from '@/fechas';
@@ -9,6 +10,7 @@ const filterStore = useFilterStore();
 interface Props {
     firma: Firma,
 }
+const emit = defineEmits(["eliminar"]);
 const props = withDefaults(defineProps<Props>(), {
     firma: () => ({
         firma: "",
@@ -45,9 +47,12 @@ const copiar = async (texto: string) => {
 }
 
 const copiarMensaje = async () => {
-    console.log(props.firma.clave)
     const mensaje = generarMensaje(props.firma.clave.plantilla, props.firma.firma, props.firma.cliente, props.firma.fecha_inicio, props.firma.fecha_fin)
     await copiar(mensaje);
+}
+
+const copiarSoloFirma = async () => {
+    await copiar(props.firma.firma);
 }
 
 const diasParaExpirar = computed(() => {
@@ -59,6 +64,12 @@ const diasParaExpirar = computed(() => {
 const meses = computed(() => {
     return diferenciaEnDiasDeDosFechas(fechaISO8601ADate(props.firma.fecha_fin), fechaISO8601ADate(props.firma.fecha_inicio)) / 30;
 });
+const eliminar = () => {
+    if (!confirm(`¿Eliminar firma? esto no se puede deshacer`)) {
+        return;
+    }
+    emit("eliminar", props.firma);
+}
 </script>
 <template>
     <div class="flex flex-col shadow-sm p-1 rounded-md">
@@ -75,8 +86,15 @@ const meses = computed(() => {
                 filterStore.fechaSinHoraDesdeCadenaISO8601(props.firma.fecha_fin) }} ({{ meses }} meses)</p>
         <strong>Expira en {{ diasParaExpirar }} días</strong>
         <div class="flex flex-row">
-            <CustomButton @click="copiarMensaje(props.firma)">Copiar</CustomButton>
-            <CustomButton tipo="danger" @click="copiar(props.firma.firma)">Eliminar</CustomButton>
+            <CustomButton tipo="success" @click="copiarMensaje()">
+                <ContentCopy></ContentCopy>
+                Mensaje
+            </CustomButton>
+            <CustomButton tipo="info" @click="copiarSoloFirma()">
+                <ContentCopy></ContentCopy>
+                Firma
+            </CustomButton>
+            <CustomButton @click="eliminar()" tipo="danger">Eliminar</CustomButton>
         </div>
     </div>
 </template>
