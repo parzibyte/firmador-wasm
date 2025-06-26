@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Clave, Cliente, Firma } from '@/Clases';
 import { useDatabaseStore } from '@/stores/db';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import DetalleFirma from './DetalleFirma.vue';
 import CustomButton from '../Forms/CustomButton.vue';
 import { useRouter } from 'vue-router';
@@ -11,11 +11,44 @@ import { obtenerFechaActualComoISO8601 } from '@/fechas';
 import CustomInput from '../Forms/CustomInput.vue';
 import FilterVariant from "vue-material-design-icons/FilterVariant.vue";
 import PlusCircle from "vue-material-design-icons/PlusCircle.vue";
+import SortAscending from "vue-material-design-icons/SortAscending.vue";
+import SortDescending from "vue-material-design-icons/SortDescending.vue";
 const firmas: Ref<Array<Firma>> = ref([]);
 const claves: Ref<Array<Clave>> = ref([]);
 const dbStore = useDatabaseStore()
 const router = useRouter();
 const cargando = ref(false);
+type Ordenacion = {
+    etiqueta: string,
+    valor: string,
+}
+const columnasOrden: Ref<Array<Ordenacion>> = ref([
+    {
+        etiqueta: "Fecha inicio",
+        valor: "firmas.fecha_inicio",
+    },
+    {
+        etiqueta: "Fecha fin",
+        valor: "firmas.fecha_fin",
+    },
+    {
+        etiqueta: "Fecha generación",
+        valor: "firmas.fecha_generacion",
+    },
+    {
+        etiqueta: "Nombre cliente",
+        valor: "clientes.nombre",
+    },
+    {
+        etiqueta: "Monto",
+        valor: "firmas.monto",
+    },
+]);
+const modosOrden = ref(["Ascendente", "Descendente"]);
+
+const ordenarPor = ref(columnasOrden.value[1]);
+const modoOrden = ref(modosOrden.value[0]);
+const mostrarFiltros = ref(false);
 
 const refrescarFirmas = async () => {
     let consulta = `SELECT 
@@ -40,6 +73,12 @@ const refrescarFirmas = async () => {
         parametros.push(claveSeleccionada.value.id);
         consulta += ` AND claves.id = ?`
     }
+    // Riesgo de inyección SQL pero estamos en el lado del cliente, podríamos sanitizar e incluso así podría seguir accediendo
+    let verdaderoOrden = "DESC";
+    if (modoOrden.value === "Ascendente") {
+        verdaderoOrden = "ASC";
+    }
+    consulta += ` ORDER BY ${ordenarPor.value.valor} ${verdaderoOrden}`;
     cargando.value = true;
     const firmasSinMapear = await dbStore.exec(consulta, parametros);
     firmas.value = firmasSinMapear.map((firma: Firma) => {
@@ -119,7 +158,13 @@ const claveSeleccionada: Ref<Clave> = ref({
     id: 0,
 });
 
-const mostrarFiltros = ref(false);
+
+const esOrdenAscendente = computed(() => modoOrden.value === "Ascendente");
+
+const cambiarModo = (nuevoModo: string) => {
+    modoOrden.value = nuevoModo;
+    refrescarFirmas();
+}
 
 </script>
 <template>
@@ -149,6 +194,17 @@ const mostrarFiltros = ref(false);
             <CustomInput @change="refrescarFirmas" type="date" v-model="fecha"
                 label="Cuya fecha de terminación sea superior o igual a">
             </CustomInput>
+            <div class="flex flex-row items-end">
+                <SelectWithoutAutocomplete @change="refrescarFirmas" label="Ordenar por" v-model="ordenarPor"
+                    :elementos="columnasOrden" :to-string="(columna: Ordenacion) => columna.etiqueta">
+                </SelectWithoutAutocomplete>
+                <CustomButton v-show="esOrdenAscendente" @click="cambiarModo('Descendente')">
+                    <SortAscending></SortAscending>
+                </CustomButton>
+                <CustomButton v-show="!esOrdenAscendente" @click="cambiarModo('Ascendente')">
+                    <SortDescending></SortDescending>
+                </CustomButton>
+            </div>
         </div>
         <div class="flex flex-col">
             {{ firmas.length }} firmas
