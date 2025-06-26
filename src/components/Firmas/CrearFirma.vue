@@ -36,7 +36,7 @@ const filtrarClientes = async (busqueda: string) => {
     return await dbStore.exec(`SELECT 
     id, nombre, correo, claveApi, fechaRegistro 
     FROM clientes 
-    WHERE clientes.nombre LIKE ? OR clientes.correo LIKE ?`, [
+    WHERE clientes.nombre LIKE ? OR clientes.correo LIKE ? LIMIT 10`, [
         `%${busqueda}%`,
         `%${busqueda}%`,
     ]);
@@ -123,11 +123,18 @@ const puedeFirmar = computed(() => {
     }
     return true;
 });
+
+const mostrarClienteSeleccionado = (cliente: Cliente) => {
+    if (!cliente.id) {
+        return "";
+    }
+    return cliente.nombre + ' (' + cliente.correo + ')'
+}
 </script>
 <template>
     <div class="flex flex-col">
         <SelectWithAutocomplete v-model="clienteSeleccionado" :get-items-function="filtrarClientes" label="Cliente"
-            :display-item-function="(cliente: Cliente) => cliente.nombre">
+            :display-item-function="mostrarClienteSeleccionado">
             <template #item="{ item, index }">
                 {{ item.nombre }} <strong>{{ item.correo }}</strong>
             </template>
