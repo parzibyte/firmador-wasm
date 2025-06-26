@@ -1,0 +1,25 @@
+{
+    "name": "Firmador",
+    "description": "Firmas digitales con RSA",
+    "short_name": "Firmador",
+    "theme_color": "#2196f3",
+    "background_color": "#2196f3",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "./",
+    "start_url": "./",
+    "icons": [
+        {
+            "src": "./images/icono.png",
+            "type": "image/png",
+            "sizes": "511x511"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "./images/screenshot.png",
+            "type": "image/png",
+            "sizes": "1024x768"
+        }
+    ]
+}
