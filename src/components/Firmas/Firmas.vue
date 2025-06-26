@@ -13,6 +13,8 @@ import FilterVariant from "vue-material-design-icons/FilterVariant.vue";
 import PlusCircle from "vue-material-design-icons/PlusCircle.vue";
 import SortAscending from "vue-material-design-icons/SortAscending.vue";
 import SortDescending from "vue-material-design-icons/SortDescending.vue";
+import { useFilterStore } from '@/stores/filter';
+const filterStore = useFilterStore();
 const firmas: Ref<Array<Firma>> = ref([]);
 const claves: Ref<Array<Clave>> = ref([]);
 const dbStore = useDatabaseStore()
@@ -49,7 +51,13 @@ const modosOrden = ref(["Ascendente", "Descendente"]);
 const ordenarPor = ref(columnasOrden.value[1]);
 const modoOrden = ref(modosOrden.value[0]);
 const mostrarFiltros = ref(false);
-
+const montoTotal = computed(() => {
+    let total = 0;
+    for (const firma of firmas.value) {
+        total += firma.monto;
+    }
+    return total;
+})
 const refrescarFirmas = async () => {
     let consulta = `SELECT 
     firmas.id,
@@ -207,7 +215,8 @@ const cambiarModo = (nuevoModo: string) => {
             </div>
         </div>
         <div class="flex flex-col">
-            {{ firmas.length }} firmas
+            {{ firmas.length }} firmas.
+            {{ filterStore.dinero(montoTotal) }}
         </div>
         <DetalleFirma @eliminar="eliminar(firma)" v-for="firma in firmas" :firma></DetalleFirma>
     </div>
