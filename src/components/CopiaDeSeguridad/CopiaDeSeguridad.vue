@@ -4,8 +4,11 @@ import CustomButton from '../Forms/CustomButton.vue';
 import type { Ajustes } from '@/Clases';
 import { useDatabaseStore } from '@/stores/db';
 import FileSelect from '../Forms/FileSelect.vue';
+import { useToastStore } from '@/stores/toast';
 const archivoParaImportar: Ref<Array<File>> = ref([]);
 const dbStore = useDatabaseStore();
+const toastStore = useToastStore();
+const cargando = ref(false);
 const ajustes: Ref<Ajustes> = ref({
     id: 0,
     id_chat_telegram: "",
@@ -24,6 +27,7 @@ const obtenerBaseDeDatosComoArchivo = async (): Promise<File> => {
 }
 
 const descargarComoArchivo = async () => {
+    cargando.value = true;
     const blob = new Blob([await obtenerBaseDeDatosComoArchivo()], { type: "application/sqlite-3" });
     const enlace = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -31,9 +35,11 @@ const descargarComoArchivo = async () => {
     enlace.download = "firmador.sqlite3";
     enlace.click();
     URL.revokeObjectURL(url);
+    cargando.value = false;
 }
 
 const enviarATelegram = async () => {
+    cargando.value = true;
     const url = `https://api.telegram.org/bot${ajustes.value.token_telegram}/sendDocument`;
     const fd = new FormData();
     fd.append("chat_id", ajustes.value.id_chat_telegram);
@@ -45,7 +51,12 @@ const enviarATelegram = async () => {
         body: fd,
     });
     const respuestaTelegram = await respuestaHttp.json();
-    console.log({ respuestaTelegram })
+    cargando.value = false;
+    if (respuestaTelegram.ok) {
+        toastStore.mostrarToast("Enviado a Telegram", "success", 500)
+    } else {
+        toastStore.mostrarToast("Error enviando a Telegram", "error", 500)
+    }
 }
 
 const puedeEnviarATelegram = computed(() => {
@@ -82,9 +93,9 @@ onMounted(() => {
     <div class="flex flex-col">
         <h2 class="text-2xl">Exportar</h2>
         <div class="flex flex-row">
-
-            <CustomButton :disabled="!puedeEnviarATelegram" @click="enviarATelegram()">A Telegram</CustomButton>
-            <CustomButton @click="descargarComoArchivo()">Descargar</CustomButton>
+            <CustomButton :loading="cargando" :disabled="!puedeEnviarATelegram" @click="enviarATelegram()">A Telegram
+            </CustomButton>
+            <CustomButton :loading="cargando" @click="descargarComoArchivo()">Descargar</CustomButton>
         </div>
         <h2 class="text-2xl">Importar</h2>
         <FileSelect :clean-on-change="true" label="Seleccione base de datos previamente exportada"

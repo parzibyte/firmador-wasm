@@ -2,9 +2,9 @@
 import IconoMenu from "vue-material-design-icons/Menu.vue";
 import MenuOpen from "vue-material-design-icons/MenuOpen.vue";
 import { ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import Menu from "./Menu.vue";
-const mostrarMenu = ref(true);
+const mostrarMenu = ref(false);
 </script>
 
 <template>
