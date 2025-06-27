@@ -33,12 +33,15 @@ const hashear = async () => {
 </script>
 <template>
     <div class="flex flex-col">
+        <p>Aquí puedes hashear contraseñas con Bcrypt usando HMAC. Para hashear escribe la clave HMAC y la contraseña
+            plana, el resultado se mostrará en la clave hasheada. Para comprobar escribe el hash y la clave HMAC, luego
+            haz clic en Comprobar</p>
         <CustomInput v-model="hmac" label="HMAC"></CustomInput>
         <CustomInput v-model="plana" label="Contraseña plana"></CustomInput>
         <CustomInput v-model="hasheada" label="Contraseña hasheada"></CustomInput>
         <div class="flex flex-row">
-            <CustomButton :loading="cargando" @click="hashear()">Hashear</CustomButton>
-            <CustomButton :loading="cargando" @click="comparar()">Comparar</CustomButton>
+            <CustomButton :disabled="!hmac || !plana" :loading="cargando" @click="hashear()">Hashear</CustomButton>
+            <CustomButton :disabled="!hmac || !hasheada" :loading="cargando" @click="comparar()">Comparar</CustomButton>
         </div>
     </div>
 </template>
