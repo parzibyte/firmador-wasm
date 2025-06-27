@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Signature from "vue-material-design-icons/Signature.vue";
 import FileDocumentMultiple from "vue-material-design-icons/FileDocumentMultiple.vue";
+import Lock from "vue-material-design-icons/Lock.vue";
 import AccountGroup from "vue-material-design-icons/AccountGroup.vue";
 import KeyChain from "vue-material-design-icons/KeyChain.vue";
 import ChartBar from "vue-material-design-icons/ChartBar.vue";
@@ -74,6 +75,15 @@ const navegarA = (destino: string) => {
             </div>
             <div class="ml-2">
                 Copia de seguridad
+            </div>
+        </div>
+        <div @click="navegarA('bcrypt')"
+            class="p-2  border-b-2 border-gray-500 hover:bg-gray-400 cursor-pointer font-bod flex flex-row text-gray-700 text-xl">
+            <div>
+                <Lock></Lock>
+            </div>
+            <div class="ml-2">
+                Bcrypt
             </div>
         </div>
         <div @click="navegarA('ajustes')"

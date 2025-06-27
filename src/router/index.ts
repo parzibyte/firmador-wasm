@@ -9,6 +9,7 @@ import Claves from '@/components/Claves/Claves.vue'
 import EditarClave from '@/components/Claves/EditarClave.vue'
 import Ajustes from '@/components/Ajustes/Ajustes.vue'
 import CopiaDeSeguridad from '@/components/CopiaDeSeguridad/CopiaDeSeguridad.vue'
+import Contraseñas from '@/components/Contraseñas/Contraseñas.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,11 @@ const router = createRouter({
       name: 'clientes',
       component: Clientes,
     },
+    {
+      path: '/bcrypt',
+      name: 'bcrypt',
+      component: Contraseñas,
+    }
   ],
 })
 

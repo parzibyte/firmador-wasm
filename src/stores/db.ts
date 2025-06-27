@@ -12,6 +12,15 @@ await DbHelper.initWasm()
 // @ts-ignore
 await DbHelper.initDatabase()
 export const useDatabaseStore = defineStore('database', () => {
+
+    async function comparar(plana: string, hasheada: string, hmac: string): Promise<any> {
+        // @ts-ignore
+        return await DbHelper.comparar(plana, hasheada, hmac);
+    }
+    async function hashear(plana: string, hmac: string): Promise<any> {
+        // @ts-ignore
+        return await DbHelper.hashear(plana, hmac);
+    }
     async function firmar(clavePrivadaRSA: string, mensaje: string, separador: string): Promise<any> {
         // @ts-ignore
         return await DbHelper.firmar(clavePrivadaRSA, mensaje, separador);
@@ -20,5 +29,5 @@ export const useDatabaseStore = defineStore('database', () => {
         // @ts-ignore
         return await DbHelper.exec(consulta, argumentos);
     }
-    return { exec, firmar };
+    return { exec, firmar, comparar, hashear };
 });

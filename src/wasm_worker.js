@@ -5,6 +5,12 @@ import MODULO_WASM from "./main.wasm?url"
 const NOMBRE_BASE_DE_DATOS = "firmador.sqlite3";
 let db;
 Comlink.expose({
+    comparar: async (plana, hasheada, hmac) => {
+        return self.comparar(plana, hasheada, hmac);
+    },
+    hashear: async (plana, hmac) => {
+        return self.hashear(plana, hmac);
+    },
     firmar: async (clavePrivadaRSA, mensaje, separador) => {
         return self.firmar(clavePrivadaRSA, mensaje, separador);
     },
@@ -65,7 +71,7 @@ Comlink.expose({
                 FOREIGN KEY(id_cliente) REFERENCES clientes(id) ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY(id_clave) REFERENCES claves(id) ON UPDATE CASCADE ON DELETE CASCADE
 				)`);
-    await db.exec(`CREATE TABLE IF NOT EXISTS ajustes(
+        await db.exec(`CREATE TABLE IF NOT EXISTS ajustes(
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_chat_telegram TEXT NOT NULL,
                 token_telegram TEXT NOT NULL

@@ -20,6 +20,34 @@ type Respuesta struct {
 
 func main() {
 	c := make(chan struct{}, 0)
+
+	js.Global().Set("comparar", js.FuncOf(func(this js.Value, args []js.Value) any {
+		contraseñaPlana := args[0]
+		contraseñaHasheada := args[1]
+		claveHmac := args[2]
+		respuesta := js.Global().Get("Object").New()
+		err := compararContraseñaConHash(contraseñaPlana.String(), contraseñaHasheada.String(), claveHmac.String())
+		respuesta.Set("datos", err == nil)
+		respuesta.Set("error", "")
+		if err != nil {
+			respuesta.Set("error", err.Error())
+		}
+		return respuesta
+	}))
+
+	js.Global().Set("hashear", js.FuncOf(func(this js.Value, args []js.Value) any {
+		contraseñaPlana := args[0]
+		claveHmac := args[1]
+		respuesta := js.Global().Get("Object").New()
+		contraseñaHasheada, err := hashearContraseña(contraseñaPlana.String(), claveHmac.String())
+		respuesta.Set("datos", contraseñaHasheada)
+		respuesta.Set("error", "")
+		if err != nil {
+			respuesta.Set("error", err.Error())
+		}
+		return respuesta
+	}))
+
 	js.Global().Set("firmar", js.FuncOf(func(this js.Value, args []js.Value) any {
 		clave := args[0]
 		mensajeCompleto := args[1]
