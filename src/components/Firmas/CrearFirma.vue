@@ -34,6 +34,7 @@ const claveSeleccionada: Ref<Clave> = ref({
     privada: "",
     publica: "",
     id: 0,
+    tipo: "Local",
 });
 const dbStore = useDatabaseStore();
 const claves: Ref<Array<Clave>> = ref([]);
@@ -48,7 +49,7 @@ const filtrarClientes = async (busqueda: string) => {
 }
 const init = async () => {
     claves.value = await dbStore.exec(`SELECT id, nombre, privada,
-    publica, costoMensual, plantilla, plantillaFirma, separador
+    publica, costoMensual, plantilla, plantillaFirma, separador, tipo
      FROM claves`, []);
     aumentarMeses();
 }
@@ -84,7 +85,28 @@ const refrescarFechaFin = () => {
 }
 const firmar = async () => {
     cargando.value = true;
-    const { datos, error } = await dbStore.firmar(claveSeleccionada.value.privada, mensajeGenerado(), claveSeleccionada.value.separador);
+    let firma, error;
+    if (claveSeleccionada.value.tipo === "Local") {
+        const respuestaFirmaLocal = await dbStore.firmar(claveSeleccionada.value.privada, mensajeGenerado(), claveSeleccionada.value.separador);
+        firma = respuestaFirmaLocal.datos;
+        error = respuestaFirmaLocal.error;
+    } else {
+        try {
+            const respuestaHttp = await fetch(claveSeleccionada.value.plantillaFirma, {
+                body: JSON.stringify({
+                    claveApi: clienteSeleccionado.value.claveApi,
+                    fechaInicio: fechaInicio.value,
+                    fechaFin: fechaFin.value,
+                    clavePrivada: claveSeleccionada.value.privada,
+                    contraseña: claveSeleccionada.value.separador,
+                }),
+                method: "POST",
+            });
+            firma = await respuestaHttp.text();
+        } catch (e: any) {
+            error = e.message;
+        }
+    }
     if (error) {
         alert("Error firmando: " + error);
         return;
@@ -98,7 +120,7 @@ const firmar = async () => {
     `, [
         clienteSeleccionado.value.id,
         claveSeleccionada.value.id,
-        datos,
+        firma,
         fechaInicio.value,
         fechaFin.value,
         costo.value,

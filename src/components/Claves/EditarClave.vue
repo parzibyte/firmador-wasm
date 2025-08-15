@@ -18,6 +18,7 @@ const detalles: Ref<Clave> = ref({
     plantillaFirma: "",
     separador: "",
     id: 0,
+    tipo: "Local",
 });
 const guardarClave = async () => {
     const r = await dbStore.exec(`UPDATE claves SET
@@ -27,7 +28,8 @@ const guardarClave = async () => {
     costoMensual = ?,
     plantilla = ?,
     plantillaFirma = ?,
-    separador = ?
+    separador = ?,
+    tipo = ?
     WHERE id = ? RETURNING *`,
         [
             detalles.value.nombre,
@@ -37,6 +39,7 @@ const guardarClave = async () => {
             detalles.value.plantilla,
             detalles.value.plantillaFirma,
             detalles.value.separador,
+            detalles.value.tipo,
             detalles.value.id,
         ]);
     console.log({ r })
@@ -44,7 +47,7 @@ const guardarClave = async () => {
 }
 const init = async () => {
     const idClave = route.params.id;
-    const claves = await dbStore.exec(`SELECT id, nombre, privada, publica, costoMensual, plantilla, plantillaFirma, separador FROM claves WHERE id = ?`, [idClave]);
+    const claves = await dbStore.exec(`SELECT id, nombre, privada, publica, costoMensual, plantilla, plantillaFirma, separador, tipo FROM claves WHERE id = ?`, [idClave]);
     if (claves.length <= 0) {
         return;
     }

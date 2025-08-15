@@ -1,4 +1,10 @@
 <script setup lang="ts">
+/*
+Modo de uso:
+<SelectWithoutAutocomplete label="Clave" v-model="claveSeleccionada" :elementos="claves"
+    :to-string="(clave: Clave) => clave.nombre">
+</SelectWithoutAutocomplete>
+*/
 import { computed, ref } from 'vue';
 
 type PropiedadesDelComponente = {

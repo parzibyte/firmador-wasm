@@ -14,7 +14,7 @@ const crearClave = () => {
 
 const refrescarClaves = async () => {
 
-    claves.value = await dbStore.exec(`SELECT id, privada, publica, nombre, costoMensual, plantilla, separador, plantillaFirma FROM claves`, []);
+    claves.value = await dbStore.exec(`SELECT id, privada, publica, nombre, costoMensual, plantilla, separador, plantillaFirma, tipo FROM claves`, []);
 }
 
 const init = async () => {

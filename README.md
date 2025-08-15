@@ -35,6 +35,19 @@ C:\Users\parzibyte>
 openssl genrsa -traditional -out clave_privada.pem 3072
 openssl rsa -in clave_privada.pem -pubout -out clave_publica.pem
 ```
+# Modo desarrollo
+
+Interfaz y funcionamiento:
+```bash
+npm install
+npm run dev
+```
+
+Si haces cambios en wasm:
+```bash
+cd wasm
+make
+```
 
 # Compilar para producción
 

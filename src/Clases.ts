@@ -5,6 +5,7 @@ export type Cliente = {
     claveApi: string,
     fechaRegistro: string,
 }
+export type TipoDeLicencia = "Local" | "API";
 export type Clave = {
     id: number,
     privada: string,
@@ -14,6 +15,7 @@ export type Clave = {
     plantilla: string,
     plantillaFirma: string,
     separador: string,
+    tipo: TipoDeLicencia,
 }
 export type Firma = {
     firma: string,

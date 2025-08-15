@@ -16,7 +16,6 @@ Comlink.expose({
     },
     exec: async (consulta, argumentos) => {
         argumentos = argumentos || [];
-        console.log("Exec desde wasm!")
         return await db.exec({
             sql: consulta,
             bind: argumentos,
@@ -28,7 +27,6 @@ Comlink.expose({
         const go = new Go();
         const result = await WebAssembly.instantiateStreaming(fetch(MODULO_WASM), go.importObject)
         go.run(result.instance);
-        console.log("initWasm listo")
     },
     initDatabase: async () => {
         const sqlite3 = await sqlite3InitModule({
@@ -76,6 +74,21 @@ Comlink.expose({
                 id_chat_telegram TEXT NOT NULL,
                 token_telegram TEXT NOT NULL
 				)`)
+        const columnas = await db.exec({
+            sql: `PRAGMA table_info("claves")`,
+            bind: [],
+            returnValue: "resultRows",
+            rowMode: "object"
+        })
+        let existe = false;
+        for (const columna of columnas) {
+            if (columna.name === "tipo") {
+                existe = true;
+            }
+        }
+        if (!existe) {
+            db.exec(`ALTER TABLE claves ADD COLUMN tipo TEXT NOT NULL DEFAULT 'Local'`)
+        }
         console.log("initDatabase listo");
     },
 });
