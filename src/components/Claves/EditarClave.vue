@@ -4,8 +4,9 @@ import CustomTextarea from '../Forms/CustomTextarea.vue';
 import CustomButton from '../Forms/CustomButton.vue';
 import { onMounted, ref, type Ref } from 'vue';
 import CustomInput from '../Forms/CustomInput.vue';
-import type { Clave } from '@/Clases';
+import type { Clave, TipoDeLicencia } from '@/Clases';
 import { useRoute, useRouter } from 'vue-router';
+import SelectWithoutAutocomplete from '../Forms/SelectWithoutAutocomplete.vue';
 const router = useRouter();
 const route = useRoute()
 const dbStore = useDatabaseStore();
@@ -20,6 +21,8 @@ const detalles: Ref<Clave> = ref({
     id: 0,
     tipo: "Local",
 });
+
+const tipos: Array<TipoDeLicencia> = ["Local", "API"];
 const guardarClave = async () => {
     const r = await dbStore.exec(`UPDATE claves SET
     nombre = ?,
@@ -66,6 +69,15 @@ const volver = () => {
         <CustomInput type="number" label="Costo mensual" v-model.number="detalles.costoMensual"></CustomInput>
         <CustomTextarea v-model="detalles.privada" label="Clave privada"></CustomTextarea>
         <CustomTextarea v-model="detalles.publica" label="Clave pública"></CustomTextarea>
+        <SelectWithoutAutocomplete label="Tipo" v-model="detalles.tipo" :elementos="tipos"
+            :to-string="(tipo: TipoDeLicencia) => tipo">
+        </SelectWithoutAutocomplete>
+        <p>Si es <strong>Local</strong> se va a generar normalmente usando el firmador WASM de Go. Si es
+            <strong>API</strong>
+            se tomará <i> plantilla para generar solo la firma </i>como la URL absoluta de la API a la que se le hará la
+            petición HTTP para
+            obtener la firma y <i>Separador de mensaje plano y firma</i> como contraseña
+        </p>
         <CustomTextarea v-model="detalles.plantillaFirma" label="Plantilla para generar solo la firma"></CustomTextarea>
         <p>Variables disponibles: <code>claveApiCliente</code>, <code>fechaInicio</code>, <code>fechaFin</code>. Usa
             {variable} dentro del texto para usarlas. Por ejemplo: <code>{fechaInicio}</code></p>
