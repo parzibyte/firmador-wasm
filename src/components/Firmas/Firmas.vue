@@ -164,6 +164,7 @@ const claveSeleccionada: Ref<Clave> = ref({
     privada: "",
     publica: "",
     id: 0,
+    tipo: "Local",
 });
 
 

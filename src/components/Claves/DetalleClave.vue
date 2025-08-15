@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
         privada: "",
         publica: "",
         separador: "",
+        tipo: 'Local',
     })
 });
 const editar = () => {
