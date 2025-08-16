@@ -102,6 +102,9 @@ const firmar = async () => {
                 }),
                 method: "POST",
             });
+            if (respuestaHttp.status !== 200) {
+                error = "Respuesta diferente a 200. Fue: " + respuestaHttp.status;
+            }
             firma = await respuestaHttp.text();
         } catch (e: any) {
             error = e.message;
